@@ -65,9 +65,10 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
     private void requestData() {
         if (!TextUtils.isEmpty(mTagEt.getText().toString())) {
+            mSearchFilmAdapter.setSubjectsBeans(null);
             SearchRequestBean searchRequestBean = new SearchRequestBean();
             searchRequestBean.setTag(mTagEt.getText().toString());
-            searchRequestBean.setCount(500);
+            searchRequestBean.setCount(600);
             mPresenter.search(searchRequestBean, Integer.valueOf(mYearAfter.getText().toString()), Integer.valueOf(mYearBefore.getText().toString()),
                     Integer.valueOf(mScoreAfter.getText().toString()), Integer.valueOf(mScoreBefore.getText().toString()), Float.valueOf(mHotEt.getText().toString()));
         }

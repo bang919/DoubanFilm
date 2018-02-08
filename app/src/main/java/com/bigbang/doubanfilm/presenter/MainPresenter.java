@@ -21,6 +21,7 @@ import io.reactivex.disposables.Disposable;
 public class MainPresenter extends BasePresenter<MainView> {
 
     private MainModel mMainModel;
+    private Disposable mMainDisposable;
 
     public MainPresenter(Context context, MainView view, LifecycleProvider<ActivityEvent> activityLifecycleProvider) {
         super(context, view, activityLifecycleProvider);
@@ -28,9 +29,14 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void search(SearchRequestBean searchRequestBean, int yearAfter, int yearBefore, int scoreAfter, int scoreBefore, float hot) {
+        if(mMainDisposable!=null){
+            mMainDisposable.dispose();
+            mMainDisposable = null;
+        }
         mMainModel.search(searchRequestBean, new Observer<SearchResponseBean>() {
             @Override
             public void onSubscribe(Disposable d) {
+                mMainDisposable = d;
             }
 
             @Override
@@ -41,11 +47,12 @@ public class MainPresenter extends BasePresenter<MainView> {
             @Override
             public void onError(Throwable e) {
                 mView.onSearchError(ExceptionUtil.getHttpExceptionMessage(e));
+                mMainDisposable = null;
             }
 
             @Override
             public void onComplete() {
-
+                mMainDisposable = null;
             }
         }, yearAfter, yearBefore, scoreAfter, scoreBefore, hot);
     }
