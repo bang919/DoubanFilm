@@ -88,7 +88,7 @@
         android:id="@+id/et_score_after"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:text="0"
         app:layout_constraintLeft_toRightOf="@id/tv_score"
         app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
@@ -97,7 +97,7 @@
         android:id="@+id/et_score_before"
         android:layout_width="50dp"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         android:text="10"
         app:layout_constraintLeft_toRightOf="@+id/et_score_after"
         app:layout_constraintTop_toBottomOf="@+id/et_tag"/>

@@ -32,7 +32,7 @@ public class MainModel {
     }
 
     public void search(SearchRequestBean bean, Observer<? super SearchResponseBean> observer, final int yearAfter, final int yearBefore,
-                       final int scoreAfter, final int scoreBefore, final float hot) {
+                       final float scoreAfter, final float scoreBefore, final float hot) {
         Observable<SearchResponseBean> observable = HttpClient.getApiInterface().search(bean.getQ(), bean.getTag(), bean.getStart(), 20);
         if (bean.getStart() == null) {
             bean.setStart(0);

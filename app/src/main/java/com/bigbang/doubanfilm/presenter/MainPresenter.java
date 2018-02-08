@@ -28,7 +28,7 @@ public class MainPresenter extends BasePresenter<MainView> {
         mMainModel = new MainModel(activityLifecycleProvider);
     }
 
-    public void search(SearchRequestBean searchRequestBean, int yearAfter, int yearBefore, int scoreAfter, int scoreBefore, float hot) {
+    public void search(SearchRequestBean searchRequestBean, int yearAfter, int yearBefore, float scoreAfter, float scoreBefore, float hot) {
         if(mMainDisposable!=null){
             mMainDisposable.dispose();
             mMainDisposable = null;
