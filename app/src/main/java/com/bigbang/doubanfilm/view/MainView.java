@@ -8,4 +8,6 @@ import com.bigbang.doubanfilm.bean.response.SearchResponseBean;
 
 public interface MainView {
     void onSearchResponse(SearchResponseBean searchResponseBean);
+
+    void onSearchError(String error);
 }

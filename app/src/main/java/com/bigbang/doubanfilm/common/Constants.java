@@ -10,4 +10,6 @@ public class Constants {
 
     public final static int NULL_color = -1;//状态栏不需要颜色的常量
 
+    public final static float BASIC_THERMOMETER = 1214289f;
+
 }

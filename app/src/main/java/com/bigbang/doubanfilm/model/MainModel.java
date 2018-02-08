@@ -3,6 +3,8 @@ package com.bigbang.doubanfilm.model;
 import com.bigbang.doubanfilm.bean.request.SearchRequestBean;
 import com.bigbang.doubanfilm.bean.response.SearchResponseBean;
 import com.bigbang.doubanfilm.http.HttpClient;
+import com.trello.rxlifecycle2.LifecycleProvider;
+import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.ArrayList;
 
@@ -15,13 +17,22 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.bigbang.doubanfilm.common.Constants.BASIC_THERMOMETER;
+
 /**
  * Created by Administrator on 2018/2/7.
  */
 
 public class MainModel {
 
-    public void search(SearchRequestBean bean, Observer<? super SearchResponseBean> observer, final int yearAfter, final int yearBefore, final int scoreAfter, final int scoreBefore) {
+    private LifecycleProvider<ActivityEvent> activityLifecycleProvider;
+
+    public MainModel(LifecycleProvider<ActivityEvent> activityLifecycleProvider) {
+        this.activityLifecycleProvider = activityLifecycleProvider;
+    }
+
+    public void search(SearchRequestBean bean, Observer<? super SearchResponseBean> observer, final int yearAfter, final int yearBefore,
+                       final int scoreAfter, final int scoreBefore, final float hot) {
         Observable<SearchResponseBean> observable = HttpClient.getApiInterface().search(bean.getQ(), bean.getTag(), bean.getStart(), 20);
         if (bean.getStart() == null) {
             bean.setStart(0);
@@ -44,7 +55,8 @@ public class MainModel {
                         for (SearchResponseBean.SubjectsBean subjectsBean : subjects) {
                             int year = Integer.valueOf(subjectsBean.getYear());
                             double average = subjectsBean.getRating().getAverage();
-                            if (year >= yearAfter && year <= yearBefore && average >= scoreAfter && average <= scoreBefore) {
+                            float subjectHot = subjectsBean.getCollect_count() / BASIC_THERMOMETER;
+                            if (year >= yearAfter && year <= yearBefore && average >= scoreAfter && average <= scoreBefore && subjectHot > hot) {
                                 subjectsReturn.add(subjectsBean);
                             }
                         }
@@ -56,6 +68,7 @@ public class MainModel {
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .compose(activityLifecycleProvider.<SearchResponseBean>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(observer);
     }
 

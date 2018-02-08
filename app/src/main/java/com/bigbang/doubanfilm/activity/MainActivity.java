@@ -12,7 +12,9 @@ import com.bigbang.doubanfilm.bean.request.SearchRequestBean;
 import com.bigbang.doubanfilm.bean.response.SearchResponseBean;
 import com.bigbang.doubanfilm.common.BaseActivity;
 import com.bigbang.doubanfilm.presenter.MainPresenter;
+import com.bigbang.doubanfilm.utils.ToastUtils;
 import com.bigbang.doubanfilm.view.MainView;
+import com.trello.rxlifecycle2.navi.NaviLifecycle;
 
 public class MainActivity extends BaseActivity<MainPresenter> implements MainView, View.OnClickListener {
 
@@ -23,6 +25,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
     private EditText mYearBefore;
     private EditText mScoreAfter;
     private EditText mScoreBefore;
+    private EditText mHotEt;
 
     @Override
     protected int getLayout() {
@@ -31,7 +34,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
     @Override
     protected MainPresenter initPresenter() {
-        return new MainPresenter(this, this);
+        return new MainPresenter(this, this, NaviLifecycle.createActivityLifecycleProvider(this));
     }
 
 
@@ -43,6 +46,7 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
         mYearBefore = findViewById(R.id.et_year_before);
         mScoreAfter = findViewById(R.id.et_score_after);
         mScoreBefore = findViewById(R.id.et_score_before);
+        mHotEt = findViewById(R.id.et_hot);
 
         mSearchRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mSearchFilmAdapter = new SearchFilmAdapter();
@@ -65,13 +69,18 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             searchRequestBean.setTag(mTagEt.getText().toString());
             searchRequestBean.setCount(500);
             mPresenter.search(searchRequestBean, Integer.valueOf(mYearAfter.getText().toString()), Integer.valueOf(mYearBefore.getText().toString()),
-                    Integer.valueOf(mScoreAfter.getText().toString()), Integer.valueOf(mScoreBefore.getText().toString()));
+                    Integer.valueOf(mScoreAfter.getText().toString()), Integer.valueOf(mScoreBefore.getText().toString()), Float.valueOf(mHotEt.getText().toString()));
         }
     }
 
     @Override
     public void onSearchResponse(SearchResponseBean searchResponseBean) {
         mSearchFilmAdapter.setSubjectsBeans(searchResponseBean.getSubjects());
+    }
+
+    @Override
+    public void onSearchError(String error) {
+        ToastUtils.showShort(error);
     }
 
     @Override

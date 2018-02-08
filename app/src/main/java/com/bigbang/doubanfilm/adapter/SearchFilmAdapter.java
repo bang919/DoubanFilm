@@ -15,6 +15,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 
 import java.util.ArrayList;
 
+import static com.bigbang.doubanfilm.common.Constants.BASIC_THERMOMETER;
+
 /**
  * Created by Administrator on 2018/2/8.
  */
@@ -23,7 +25,7 @@ public class SearchFilmAdapter extends RecyclerView.Adapter<SearchFilmAdapter.Se
 
 
     private ArrayList<SearchResponseBean.SubjectsBean> mSubjectsBeans;
-    private float BASIC_THERMOMETER = 1214289;
+
 
     public void setSubjectsBeans(ArrayList<SearchResponseBean.SubjectsBean> datas) {
         mSubjectsBeans = datas;

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.bigbang.doubanfilm.R;
+import com.trello.navi2.component.NaviActivity;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ import java.util.Map;
  * activity 基类
  */
 
-public abstract class BaseActivity<P extends BasePresenter> extends AppCompatActivity {
+public abstract class BaseActivity<P extends BasePresenter> extends NaviActivity {
 
     protected P mPresenter;
 
