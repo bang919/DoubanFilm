@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bigbang.doubanfilm.activity.MainActivity">
+
+    <TextView
+        android:id="@+id/tv_tag"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="类型"
+        app:layout_constraintBottom_toBottomOf="@+id/et_tag"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <EditText
+        android:id="@+id/et_tag"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="喜剧"
+        app:layout_constraintLeft_toRightOf="@id/tv_tag"
+        app:layout_constraintRight_toLeftOf="@id/search_btn"/>
+
+    <Button
+        android:id="@+id/search_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="搜索"
+        app:layout_constraintLeft_toRightOf="@id/et_tag"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_year"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:text="年份"
+        app:layout_constraintBottom_toBottomOf="@+id/et_year_before"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <EditText
+        android:id="@+id/et_year_after"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:text="1900"
+        app:layout_constraintLeft_toRightOf="@id/tv_year"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <EditText
+        android:id="@+id/et_year_before"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:text="2018"
+        app:layout_constraintLeft_toRightOf="@+id/et_year_after"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:text="评分"
+        app:layout_constraintBottom_toBottomOf="@+id/et_year_before"
+        app:layout_constraintLeft_toRightOf="@id/et_year_before"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <EditText
+        android:id="@+id/et_score_after"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:text="0"
+        app:layout_constraintLeft_toRightOf="@id/tv_score"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <EditText
+        android:id="@+id/et_score_before"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:text="10"
+        app:layout_constraintLeft_toRightOf="@+id/et_score_after"
+        app:layout_constraintTop_toBottomOf="@+id/et_tag"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_main_search"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_year_after"/>
+
+</android.support.constraint.ConstraintLayout>

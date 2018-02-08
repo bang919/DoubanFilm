@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="MyThermometer">
+        <attr name="liquid_color" format="color"/>
+        <attr name="crust_color" format="color"/>
+        <attr name="init_temperature" format="float"/>
+    </declare-styleable>
+
+
+</resources>
