@@ -23,4 +23,7 @@ public interface ApiInterface {
 
     @GET("v2/movie/search")
     Observable<SearchResponseBean> search(@Query("q") String query, @Query("tag") String tag, @Query("start") Integer start, @Query("count") Integer count);
+
+    @GET("v2/movie/top250")
+    Observable<SearchResponseBean> getTop250(@Query("start") Integer start, @Query("count") Integer count);
 }

@@ -56,4 +56,33 @@ public class MainPresenter extends BasePresenter<MainView> {
             }
         }, yearAfter, yearBefore, scoreAfter, scoreBefore, hot);
     }
+
+    public void getTop250(){
+        if(mMainDisposable!=null){
+            mMainDisposable.dispose();
+            mMainDisposable = null;
+        }
+        mMainModel.getTop250(new Observer<SearchResponseBean>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                mMainDisposable = d;
+            }
+
+            @Override
+            public void onNext(SearchResponseBean searchResponseBean) {
+                mView.onSearchResponse(searchResponseBean);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                mView.onSearchError(ExceptionUtil.getHttpExceptionMessage(e));
+                mMainDisposable = null;
+            }
+
+            @Override
+            public void onComplete() {
+                mMainDisposable = null;
+            }
+        });
+    }
 }

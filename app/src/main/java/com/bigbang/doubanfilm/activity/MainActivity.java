@@ -1,7 +1,9 @@
 package com.bigbang.doubanfilm.activity;
 
+import android.graphics.Rect;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
@@ -50,7 +52,39 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
 
         mSearchRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mSearchFilmAdapter = new SearchFilmAdapter();
+        mSearchRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+                outRect.left = 10;
+                outRect.right = 10;
+            }
+        });
         mSearchRecyclerView.setAdapter(mSearchFilmAdapter);
+
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.Callback() {
+            @Override
+            public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+                return makeMovementFlags(ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT | ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
+            }
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                int position = viewHolder.getAdapterPosition();
+                int targetPosition = target.getAdapterPosition();
+                mSearchFilmAdapter.notifyItemMoved(position, targetPosition);
+                return true;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.LEFT || direction == ItemTouchHelper.RIGHT) {
+                    mSearchFilmAdapter.notifyItemRemoved(viewHolder.getAdapterPosition());
+                }
+            }
+        });
+        itemTouchHelper.attachToRecyclerView(mSearchRecyclerView);
     }
 
     @Override
@@ -69,8 +103,9 @@ public class MainActivity extends BaseActivity<MainPresenter> implements MainVie
             SearchRequestBean searchRequestBean = new SearchRequestBean();
             searchRequestBean.setTag(mTagEt.getText().toString());
             searchRequestBean.setCount(800);
-            mPresenter.search(searchRequestBean, Integer.valueOf(mYearAfter.getText().toString()), Integer.valueOf(mYearBefore.getText().toString()),
-                    Float.valueOf(mScoreAfter.getText().toString()), Float.valueOf(mScoreBefore.getText().toString()), Float.valueOf(mHotEt.getText().toString()));
+//            mPresenter.search(searchRequestBean, Integer.valueOf(mYearAfter.getText().toString()), Integer.valueOf(mYearBefore.getText().toString()),
+//                    Float.valueOf(mScoreAfter.getText().toString()), Float.valueOf(mScoreBefore.getText().toString()), Float.valueOf(mHotEt.getText().toString()));
+            mPresenter.getTop250();
         }
     }
 

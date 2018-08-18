@@ -7,10 +7,13 @@ import com.trello.rxlifecycle2.LifecycleProvider;
 import com.trello.rxlifecycle2.android.ActivityEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
@@ -50,13 +53,16 @@ public class MainModel {
                 return Observable.create(new ObservableOnSubscribe<SearchResponseBean>() {
                     @Override
                     public void subscribe(ObservableEmitter<SearchResponseBean> emitter) throws Exception {
+                        ArrayList<String> tempStrings = new ArrayList<>();
                         ArrayList<SearchResponseBean.SubjectsBean> subjectsReturn = new ArrayList<>();
                         ArrayList<SearchResponseBean.SubjectsBean> subjects = bean.getSubjects();
                         for (SearchResponseBean.SubjectsBean subjectsBean : subjects) {
                             int year = Integer.valueOf(subjectsBean.getYear());
                             double average = subjectsBean.getRating().getAverage();
                             float subjectHot = subjectsBean.getCollect_count() / BASIC_THERMOMETER;
-                            if (year >= yearAfter && year <= yearBefore && average >= scoreAfter && average <= scoreBefore && subjectHot > hot) {
+                            if (year >= yearAfter && year <= yearBefore && average >= scoreAfter && average <= scoreBefore
+                                    && subjectHot > hot && tempStrings.indexOf(subjectsBean.getId()) == -1) {
+                                tempStrings.add(subjectsBean.getId());
                                 subjectsReturn.add(subjectsBean);
                             }
                         }
@@ -70,6 +76,40 @@ public class MainModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .compose(activityLifecycleProvider.<SearchResponseBean>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(observer);
+    }
+
+    public void getTop250(Observer<? super SearchResponseBean> observer) {
+        Observable<SearchResponseBean> observable = HttpClient.getApiInterface().getTop250(0,100);
+
+        for (int i = 100; i <= 250; i = i + 100) {
+            int count = i + 100 <= 250 ? 100 : 50;
+            observable = zipTwoSearchRequest(observable, HttpClient.getApiInterface().getTop250(i,count));
+        }
+        observable.flatMap(new Function<SearchResponseBean, ObservableSource<SearchResponseBean>>() {
+            @Override
+            public ObservableSource<SearchResponseBean> apply(final SearchResponseBean searchResponseBean) throws Exception {
+
+                return Observable.create(new ObservableOnSubscribe<SearchResponseBean>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<SearchResponseBean> e) throws Exception {
+                        ArrayList<SearchResponseBean.SubjectsBean> subjects = searchResponseBean.getSubjects();
+                        Collections.sort(subjects, new Comparator<SearchResponseBean.SubjectsBean>() {
+                            @Override
+                            public int compare(SearchResponseBean.SubjectsBean o1, SearchResponseBean.SubjectsBean o2) {
+                                return Integer.valueOf(o2.getYear())-Integer.valueOf(o1.getYear());
+                            }
+                        });
+                        searchResponseBean.setSubjects(subjects);
+                        e.onNext(searchResponseBean);
+                        e.onComplete();
+                    }
+                });
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .compose(activityLifecycleProvider.<SearchResponseBean>bindUntilEvent(ActivityEvent.DESTROY))
+                .subscribe(observer);
+
     }
 
     private Observable<SearchResponseBean> zipTwoSearchRequest(Observable<SearchResponseBean> observable, Observable<SearchResponseBean> observable2) {
